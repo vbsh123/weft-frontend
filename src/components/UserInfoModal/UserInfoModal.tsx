@@ -2,9 +2,9 @@ import { ComponentType, FC, useState } from "react";
 import { useLocalStorage } from 'react-use';
 import { FormikErrors, FormikTouched, useFormik } from "formik";
 import * as yup from 'yup';
-import FullNameStep from "./steps/FullNameStep/FullNameStep";
-import AgeStep from "./steps/AgeStep/AgeStep";
-import ReviewStep from "./steps/ReviewStep/ReviewStep";
+import FullNameStep from "./Steps/FullNameStep/FullNameStep";
+import AgeStep from "./Steps/AgeStep/AgeStep";
+import ReviewStep from "./Steps/ReviewStep/ReviewStep";
 import { UserData } from "../../types/UserData";
 import './UserInfoModal.css'
 
