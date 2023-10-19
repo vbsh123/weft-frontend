@@ -1,11 +1,8 @@
-import { ComponentType, FC, useState } from "react";
+import { FC, useState } from "react";
 import { useLocalStorage } from 'react-use';
 import { FormikErrors, FormikTouched, useFormik } from "formik";
-import * as yup from 'yup';
-import FullNameStep from "./Steps/FullNameStep/FullNameStep";
-import AgeStep from "./Steps/AgeStep/AgeStep";
-import ReviewStep from "./Steps/ReviewStep/ReviewStep";
 import { UserData } from "../../types/UserData";
+import { steps } from "./Steps/steps";
 import './UserInfoModal.css'
 
 type Props = {
@@ -22,45 +19,27 @@ export type StepProps = {
   touched: FormikTouched<UserData>;
 };
 
-const steps: ComponentType<StepProps>[] = [
-    FullNameStep,
-    AgeStep,
-    ReviewStep
-]
-
 const initialUserData: UserData = {
     firstName: '',
     lastName: '',
     age: '',
 }
-
-const validationSchema = yup.object().shape({
-  firstName: yup.string().required('First name is required')
-    .max(20, 'First name must be at most 20 characters')
-    .matches(/^[a-zA-Z]*$/, 'First name can only contain letters'),
-
-  lastName: yup.string().required('Last name is required')
-    .max(20, 'Last name must be at most 20 characters')
-    .matches(/^[a-zA-Z]*$/, 'Last name can only contain letters'),
-
-  age: yup.number().required('Age is required')
-});
   
   const UserInfoModal: FC<Props> = ({ isOpen, onClose }) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [, setValue] = useLocalStorage('user');
-    const CurrentStepComponent = steps[currentStep]
+    const CurrentStepComponent = steps[currentStep].component
 
     const formik = useFormik({
       initialValues: initialUserData,
-      validationSchema,
-      onSubmit: (userData) => {
-          setValue(userData);
+      validationSchema: steps[currentStep].validations,
+      onSubmit: () => {
+          setCurrentStep(step => step + 1)
       }
   });
 
-    const handleNext = () => {
-        setCurrentStep(step => step + 1)
+    const handleFinish = () => {
+        setValue(formik.values)
     }
 
     const handleBack = () => {
@@ -85,8 +64,8 @@ const validationSchema = yup.object().shape({
             <div className="modal-footer">
               <button disabled={currentStep === 0} onClick={handleBack}>Back</button>
               { isCurrentStepLast() ? 
-              <button type="submit" onClick={() => formik.handleSubmit()}>Finish</button> : 
-              <button onClick={handleNext}>Next</button> }
+              <button onClick={handleFinish}>Finish</button> : 
+              <button type="submit" onClick={() => formik.handleSubmit()}>Next</button> }
             </div>
           </div>
         </div>
