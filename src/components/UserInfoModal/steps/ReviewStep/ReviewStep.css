@@ -1,0 +1,14 @@
+.step {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.field {
+    margin: 8px;
+}
+
+.title {
+    font-weight: bold;
+}
